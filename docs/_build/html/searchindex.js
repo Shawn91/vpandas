@@ -1,0 +1,1 @@
+Search.setIndex({docnames:["index","source/modules"],envversion:53,filenames:["index.rst","source/modules.rst"],objects:{},objnames:{},objtypes:{},terms:{index:0,modul:0,page:0,search:0},titles:["Welcome to vpandas\u2019s documentation!","vpandas"],titleterms:{document:0,indic:0,tabl:0,vpanda:[0,1],welcom:0}})
