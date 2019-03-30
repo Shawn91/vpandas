@@ -36,7 +36,7 @@ class PandasLoader:
             raise ValueError('data_format received unsupported data format %s' % str(data_format))
         return data_format
     
-    def _load_csv(self,path,data_format, **kwargs):
+    def _load_csv(self, path, data_format, **kwargs):
         if 'sep' not in kwargs:
             kwargs['sep'] = '\t' if data_format == 'tsv' else ','
         return pd.read_csv(filepath_or_buffer=path, **kwargs)
