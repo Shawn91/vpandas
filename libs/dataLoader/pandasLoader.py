@@ -19,12 +19,9 @@ class PandasLoader:
 
     supported_data_format = ('csv','tsv')
 
-    def __init__(self, path, data_format=None):
-        if not isinstance(path, str):
-            raise TypeError('path is supposed to be a string but received %s of type %s' % (str(path), type(path)))
-        self.path = path
-        self.data_format = self._parse_data_format(path, data_format)
-        
+    def __init__(self):
+        pass
+
     def _parse_data_format(self, path, data_format):
         if data_format is None:
             if os.path.isfile(path):
@@ -39,11 +36,17 @@ class PandasLoader:
             raise ValueError('data_format received unsupported data format %s' % str(data_format))
         return data_format
     
-    def _load_csv(self, **kwargs):
+    def _load_csv(self,path,data_format, **kwargs):
         if 'sep' not in kwargs:
-            kwargs['sep'] = '\t' if self.data_format == 'tsv' else ','
-        return pd.read_csv(filepath_or_buffer=self.path, **kwargs)
+            kwargs['sep'] = '\t' if data_format == 'tsv' else ','
+        return pd.read_csv(filepath_or_buffer=path, **kwargs)
     
-    def load_data(self, **kwargs):
-        if self.data_format in ('csv', 'tsv'):
+    def load_data(self, path=None, data_format=None, **kwargs):
+        if not isinstance(path, str):
+            raise TypeError('path is supposed to be a string but received %s of type %s' % (str(path), type(path)))
+        data_format = self._parse_data_format(path, data_format)
+        
+        if data_format in ('csv', 'tsv'):
             return self._load_csv(**kwargs)
+
+pandas_loader = PandasLoader()
