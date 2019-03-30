@@ -17,13 +17,14 @@ class PandasLoader:
         Add support for more data formats. Currently, only csv files are supported.
     """
 
-    supported_data_format = ('csv','tsv')
+    supported_data_format = ('.csv','.tsv')
 
     def __init__(self):
         pass
 
     def _parse_data_format(self, path, data_format):
         if data_format is None:
+            print(path)
             if os.path.isfile(path):
                 data_format = os.path.splitext(path)[1]
             else:
@@ -38,7 +39,7 @@ class PandasLoader:
     
     def _load_csv(self, path, data_format, **kwargs):
         if 'sep' not in kwargs:
-            kwargs['sep'] = '\t' if data_format == 'tsv' else ','
+            kwargs['sep'] = '\t' if data_format == '.tsv' else ','
         return pd.read_csv(filepath_or_buffer=path, **kwargs)
     
     def load_data(self, path=None, data_format=None, **kwargs):
@@ -46,7 +47,7 @@ class PandasLoader:
             raise TypeError('path is supposed to be a string but received %s of type %s' % (str(path), type(path)))
         data_format = self._parse_data_format(path, data_format)
         
-        if data_format in ('csv', 'tsv'):
-            return self._load_csv(**kwargs)
+        if data_format in ('.csv', '.tsv'):
+            return self._load_csv(path=path, data_format=data_format,**kwargs)
 
 pandas_loader = PandasLoader()
