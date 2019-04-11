@@ -5,7 +5,7 @@ import os
 from PyQt5.QtCore import QAbstractTableModel, Qt, pyqtProperty
 import pandas as pd
 
-from libs.dataLoader.pandasLoader import pandas_loader
+from libraries.dataLoader.pandasLoader import pandas_loader
 
 class DataFrameTableModel(QAbstractTableModel):
     """custom model for the core table view
@@ -26,7 +26,7 @@ class DataFrameTableModel(QAbstractTableModel):
             if isinstance(df_data_path, pd.core.frame.DataFrame):
                 return df_data_path
             if isinstance(df_data_path, str):
-                return pandas_loader.load_data(path=df_data_path, data_format=data_format,**kwargs)
+                return pandas_loader.load_data(file_path=df_data_path, data_format=data_format,**kwargs)['result']
         else:
             raise ValueError("df_data_path must be a pandas dataframe or path to the data but received a %s" % type(df_data_path))
     

@@ -31,6 +31,6 @@ class DataFrameTableWidget(Qt.QWidget):
 if __name__ == "__main__":
     app = Qt.QApplication(sys.argv)
         
-    v = DataFrameTableWidget(df_data_path=r'E:\Study\ASX\stock_basic_list.csv')
+    v = DataFrameTableWidget(df_data_path=r'E:\Study\projects\Wiki_Cities\2.csv')
     v.show()
     sys.exit(app.exec_())
