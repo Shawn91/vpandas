@@ -124,7 +124,7 @@ class PandasLoader:
 pandas_loader = PandasLoader()
 
 if __name__ == "__main__":
-    with open(r'E:\Study\projects\Wiki_Cities\2.csv') as f:
+    with open(r'E:\Study\projects\Wiki_Cities\2.csv', 'rb') as f:
         encoding = chardet.detect(f.read())['encoding']
         print(encoding)
     print(pandas_loader.load_data(r'E:\Study\projects\Wiki_Cities\2.csv',nrows=10, encoding=encoding,random_selection=True, skiprows=1,header=None))
