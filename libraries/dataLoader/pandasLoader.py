@@ -39,25 +39,9 @@ class PandasLoader:
                 pass
         elif not isinstance(data_format, str):
             raise TypeError('data_format is supposed to be a string but received %s of type %s' % (str(data_format), type(data_format)))
-        
         if data_format not in self.SUPPORTED_DATA_FORMAT:
             raise ValueError('data_format received unsupported data format %s' % str(data_format))
         return data_format
-    
-    @staticmethod
-    def _select_rows(df, nrows=1, random_selection=False):
-        """Select certain number of rows from a dataframe
-        Args:
-            nrows(int): Number of rows needed. Defaults to 1 and if set to 0 or None the entire dataframe will be returned
-            random_selection(boolean): Select rows randomly if set to True, otherwise the first nrows will be returned 
-        """
-        if nrows:
-            if random_selection:
-                return df.sample(n=nrows, random_state=42) # not truly random to ensure the same dataframe will ge generated
-            else:
-                return df.head(nrows)
-        else:
-            return df
 
     def _load_csv(self, file_path, data_format, encoding=None, nrows=None, selection_method='random', **kwargs):
         """Loat a csv/tsv file into dataframe. If the file is too large for memory, nrows argument could be set to read only certain number of lines.
@@ -94,7 +78,7 @@ class PandasLoader:
                 skip_first_nlines += int(kwargs['skiprows'])
                 del kwargs['skiprows']
             if 'header' in kwargs:
-                if (kwargs['header'] == 0 or kwargs['header'] == 'infer'):
+                if kwargs['header'] == 0 or kwargs['header'] == 'infer':
                     with open(file_path, encoding=encoding) as f:
                         header = f.readline()
                     skip_first_nlines += 1

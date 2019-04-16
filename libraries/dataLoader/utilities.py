@@ -112,6 +112,19 @@ def sample_distinct_lines_from_file(file_path, total_num_lines=None, sample_size
     else:
         return is_file        
 
+def parse_json_format(file_path=None):
+    """Detect whether a json file is a standard json or jsonl(json lines)
+    Retures:
+        str: json or jsonl
+    """
+    is_file_res = check_is_file(file_path)
+    if is_file_res['result']:
+        with open(file_path) as f:
+            if f.readline().strip().startswith('['):
+                return generate_response(result='jsonl')
+            return generate_response(result='json')
+    else:
+        return is_file_res
 
 if __name__ == "__main__":
     print(sample_distinct_lines_from_file(r'C:\Users\zyx199199\Desktop\a.txt',1,1))
