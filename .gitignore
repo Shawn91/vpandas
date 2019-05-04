@@ -1,14 +1,8 @@
-
 \.vscode/
 \.spyproject/
 \.idea/
-<<<<<<< Updated upstream
 __pycache__/
-=======
-
-# Python:
 *.pyc
 *.so
 *.egg
 *.egg-info
->>>>>>> Stashed changes

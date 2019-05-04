@@ -5,6 +5,7 @@ import io
 import pandas as pd
 import chardet
 
+import settings
 from settings import generate_response
 from libraries.dataLoader import utilities
 
@@ -23,7 +24,6 @@ class PandasLoader:
         Add support for more data formats. Only csv files are currently supported.
     """
 
-    SUPPORTED_DATA_FORMAT = ('.csv','.tsv')
     CHUNK_SIZE = 300000
 
 
@@ -32,16 +32,11 @@ class PandasLoader:
 
     def _parse_data_format(self, path, data_format):
         if data_format is None:
-            if os.path.isfile(path):
-                data_format = os.path.splitext(path)[1]
-            else:
-                # TODO: Add support for more data formats
-                pass
+            data_format_res = utilities.parse_data_format_from_path(path, settings.SUPPORTED_DATA_FORMAT)
+            return data_format_res['result']
+
         elif not isinstance(data_format, str):
-            raise TypeError('data_format is supposed to be a string but received %s of type %s' % (str(data_format), type(data_format)))
-        if data_format not in self.SUPPORTED_DATA_FORMAT:
-            raise ValueError('data_format received unsupported data format %s' % str(data_format))
-        return data_format
+            return generate_response(warning='data_format is supposed to be a string but received %s of type %s' % (str(data_format), type(data_format)))
 
     def _load_csv(self, file_path, data_format, encoding=None, nrows=None, selection_method='random', **kwargs):
         """Loat a csv/tsv file into dataframe. If the file is too large for memory, nrows argument could be set to read only certain number of lines.
@@ -98,12 +93,13 @@ class PandasLoader:
         if not isinstance(file_path, str):
             raise TypeError('path is supposed to be a string but received %s of type %s' % (str(file_path), type(file_path)))
         data_format = self._parse_data_format(file_path, data_format)
-        
-        if data_format in ('.csv', '.tsv'):
-            selection_method = 'random' if random_selection else 'first'
-            if not encoding:
-                encoding = utilities.check_encoding(file_path)['result']
-            return self._load_csv(file_path=file_path, data_format=data_format, encoding=encoding, nrows=nrows, selection_method=selection_method, **kwargs)
+        if data_format['result']:
+            data_format = data_format['result']
+            if data_format in ('.csv', '.tsv'):
+                selection_method = 'random' if random_selection else 'first'
+                if not encoding:
+                    encoding = utilities.check_encoding(file_path)['result']
+                return self._load_csv(file_path=file_path, data_format=data_format, encoding=encoding, nrows=nrows, selection_method=selection_method, **kwargs)
 
 pandas_loader = PandasLoader()
 

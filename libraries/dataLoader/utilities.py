@@ -65,7 +65,7 @@ def sample_distinct_lines_from_file(file_path, total_num_lines=None, sample_size
     http://metadatascience.com/2014/02/27/random-sampling-from-very-large-files/.
 
     Returns:
-        list: list of lines sampled.
+        list: List of lines sampled.
     """
     is_file = check_is_file(file_path)
     if is_file['result']:
@@ -111,6 +111,27 @@ def sample_distinct_lines_from_file(file_path, total_num_lines=None, sample_size
         
     else:
         return is_file        
+
+def parse_data_format_from_path(path, supported_formats):
+    """Extract data format from path.
+    Args:
+        path(str): File path or database URI.
+        supported_formats(list): Data formats that are currently supported.
+    Returns:
+        str: One of the supported data format
+    """
+    data_format = None
+    if os.path.isfile(path):
+        data_format = os.path.splitext(path)[1].lower()
+    else:
+        # TODO: Add support for more data formats
+        pass
+
+    if data_format is None:
+        return generate_response(warning='The path %s is not understandable.' % path)
+    elif data_format not in supported_formats:
+        return generate_response(warning='The data format %s is not currently supported.' % data_format)
+    return generate_response(result=data_format)
 
 def parse_json_format(file_path=None):
     """Detect whether a json file is a standard json or jsonl(json lines)
