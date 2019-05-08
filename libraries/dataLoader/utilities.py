@@ -17,13 +17,18 @@ def check_encoding(file_path_or_text=None):
             file_path_or_text = b''.join(f.readline() for _ in range(100))
     return generate_response(result=chardet.detect(file_path_or_text)['encoding'])
 
-def approximate_line_count(file_path, encoding=None):
-    """Get an estimation of number of lines of a text file
+def check_file_size(file_path):
+    if check_is_file(file_path)['result']:
+        size = os.path.getsize(file_path)
+        return generate_response(result=size)
+
+def approximate_record_number(file_path, encoding=None):
+    """Get an estimation of number of data records of a text file or a database
     Args:
-        encoding: Encoding of the file. Defaults to utf-8. If set to falsy values, a Python library called `chardet` will be used to detect the encoding.
+        encoding: Encoding of the file. If set to falsy values, a Python library called `chardet` will be used to detect the encoding.
     
     Returns:
-        int: Approximate number of lines in the file. 0 if the file is empty and -1 if some error occures and raise_exception set to False.
+        int: Approximate number of lines in the file. 0 if the file is empty.
     """
     NUM_TEST_LINES = 1000
     is_file = check_is_file(file_path)
@@ -41,7 +46,7 @@ def approximate_line_count(file_path, encoding=None):
             if not encoding:
                 encoding = chardet.detect(raw_text)['encoding']
             raw_text_size = len(raw_text.decode(encoding))
-            file_size = os.path.getsize(file_path)
+            file_size = check_file_size(file_path)['result']
             if raw_text_size:
                 return generate_response(result=int(file_size / raw_text_size * NUM_TEST_LINES))
             else: # raw_text_size is zero
@@ -50,6 +55,10 @@ def approximate_line_count(file_path, encoding=None):
             return generate_response(result=0, warning='The file is empty')
     else: # not a file
         return is_file
+
+def get_exact_record_num(file_path, encoding=None):
+    """"""
+    return
 
 def sample_distinct_lines_from_file(file_path, total_num_lines=None, sample_size=100, skip_first_nlines=1,encoding='utf-8', random_seed=42):
     """Quickly sample distinct lines from a text file.
@@ -72,7 +81,7 @@ def sample_distinct_lines_from_file(file_path, total_num_lines=None, sample_size
         sample = {}
         file_size = os.path.getsize(file_path)
         if not total_num_lines:
-            total_num_lines_res = approximate_line_count(file_path, encoding=encoding)
+            total_num_lines_res = approximate_record_number(file_path, encoding=encoding)
             if isinstance(total_num_lines_res['result'], int): # successfully estimated line count of the file
                 total_num_lines = total_num_lines_res['result']
             else:
@@ -112,13 +121,12 @@ def sample_distinct_lines_from_file(file_path, total_num_lines=None, sample_size
     else:
         return is_file        
 
-def parse_data_format_from_path(path, supported_formats):
+def parse_data_format_from_path(path):
     """Extract data format from path.
     Args:
         path(str): File path or database URI.
-        supported_formats(list): Data formats that are currently supported.
     Returns:
-        str: One of the supported data format
+        str: Parsed data format
     """
     data_format = None
     if os.path.isfile(path):
@@ -129,8 +137,8 @@ def parse_data_format_from_path(path, supported_formats):
 
     if data_format is None:
         return generate_response(warning='The path %s is not understandable.' % path)
-    elif data_format not in supported_formats:
-        return generate_response(warning='The data format %s is not currently supported.' % data_format)
+    # elif data_format not in supported_formats:
+    #     return generate_response(warning='The data format %s is currently not supported.' % data_format)
     return generate_response(result=data_format)
 
 def parse_json_format(file_path=None):
@@ -148,4 +156,4 @@ def parse_json_format(file_path=None):
         return is_file_res
 
 if __name__ == "__main__":
-    print(sample_distinct_lines_from_file(r'C:\Users\zyx199199\Desktop\a.txt',1,1))
+    print(check_encoding(r'C:\Users\zyx199199\Desktop\a.txt',1,1))

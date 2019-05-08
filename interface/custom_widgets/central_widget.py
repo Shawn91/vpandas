@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QWidget,QStackedWidget,QSplitter,QHBoxLayout,QFrame
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QFont
 
 from interface.custom_widgets.table_tab_widget import TableTabWidget
 from interface.custom_widgets.settings_functions_stacked_widget import SettingsFunctionsStackedWidget
@@ -22,13 +23,14 @@ class CentralWidget(QWidget):
         info_stacked_widget = InfoStackedWidget()
         table_info_splitter.addWidget(table_tab_widget)
         table_info_splitter.addWidget(info_stacked_widget)
-        table_info_splitter.setStretchFactor(0, 3)
-        table_info_splitter.setStretchFactor(1, 1)
 
+        # The two numbers 20000 and 10000 indicate the relative sizes of the two child widgets.
+        # The numbers are purposely set very big instead of 2 and 1.
+        # See https://stackoverflow.com/questions/29560912/qsplitter-stretching-factors-behave-differnt-from-normal-ones for reference
+        table_info_splitter.setSizes([20000,10000])
         settings_content_splitter.addWidget(settings_functions_stacked_widget)
         settings_content_splitter.addWidget(table_info_splitter)
-        settings_content_splitter.setStretchFactor(0, 1)
-        settings_content_splitter.setStretchFactor(1, 4)
+        settings_content_splitter.setSizes([10000, 40000])
         hlayout.addWidget(settings_content_splitter)
         self.setLayout(hlayout)
 

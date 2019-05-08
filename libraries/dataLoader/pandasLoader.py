@@ -56,7 +56,7 @@ class PandasLoader:
         if not nrows: # return the entire dataframe in regardless of the size of the file
             return generate_response(result=pd.read_csv(filepath_or_buffer=file_path,encoding=encoding,**kwargs))
 
-        total_num_lines_res = utilities.approximate_line_count(file_path, encoding=encoding)
+        total_num_lines_res = utilities.approximate_record_number(file_path, encoding=encoding)
         if not total_num_lines_res['result']:
             return total_num_lines_res
         

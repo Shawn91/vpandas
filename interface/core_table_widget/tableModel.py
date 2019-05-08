@@ -1,7 +1,6 @@
 import sys
 import os
 
-# from PyQt5.Qt import *
 from PyQt5.QtCore import QAbstractTableModel, Qt, pyqtProperty
 import pandas as pd
 
