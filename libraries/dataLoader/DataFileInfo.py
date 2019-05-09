@@ -26,7 +26,7 @@ class DataFileInfo:
         self._size = ('', '') # first element for number of size, second element for unit
         self._estimated_record_num = None
         self._exact_record_num = None
-        self._separator = None
+        self._separator = ''
         self._headers = []
         self._header_line = 1
         self.warnings = {}
@@ -58,6 +58,7 @@ class DataFileInfo:
         if new_data_format in settings.SUPPORTED_DATA_FORMAT:
             self._data_format = new_data_format
         else:
+            self._data_format = ''
             self.warnings['path'] = 'The data format %s is currently not supported.' % new_data_format
 
     @property
@@ -122,7 +123,14 @@ class DataFileInfo:
         if data_format_res['result']:
             self.data_format = data_format_res['result']
         else:
+            self.data_format = ''
             self.warnings['path'] = data_format_res['warning']
+
+        if self.data_format:
+            if self.data_format in ('.csv', '.tsv'):
+                self.separator = ',' if self.data_format == '.csv' else '\t'
+        else:
+            self.separator = ''
 
         est_record_num_res = utilities.approximate_record_number(self.path, self.encoding)
         if est_record_num_res['result'] or est_record_num_res['result'] == 0:

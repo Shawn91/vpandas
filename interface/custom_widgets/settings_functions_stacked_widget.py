@@ -42,7 +42,15 @@ class SettingsFunctionsStackedWidget(QStackedWidget,Ui_StackedWidget):
 
 
         for field, value in self.file.get_all_properties().items():
-            if field in ['path','headers', 'data_format']:
+            if field in ['path','headers']:
+                continue
+
+            if field == 'data_format':
+                if value in ('.csv', '.tsv'):
+                    self.csv_settings_widget.setEnabled(True)
+                else:
+                    print('haha ')
+                    self.csv_settings_widget.setEnabled(False)
                 continue
 
             if field  == 'record_num':
@@ -51,7 +59,11 @@ class SettingsFunctionsStackedWidget(QStackedWidget,Ui_StackedWidget):
                 else:
                     self.record_num_label.setText(str(value['estimated'])+' (estimated)')
                 continue
+
+
+
             self.field_widgets[field].setText(str(value))
+
 
     # def show_path_warning(self, warning):
     #     if not warning:
