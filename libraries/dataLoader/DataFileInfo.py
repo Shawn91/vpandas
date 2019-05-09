@@ -104,7 +104,7 @@ class DataFileInfo:
 
     def get_all_properties(self):
         return {'path':self.path, 'encoding':self.encoding, 'size':self.size[0], 'size_unit':self.size[1],'data_format':self.data_format,
-                'estimated_record_num':self.estimated_record_num, 'exact_record_num':self.exact_record_num,
+                'record_num':{'exact':self.exact_record_num, 'estimated':self.estimated_record_num},
                 'separator':self.separator, 'headers':self.headers, 'header_line':self.header_line}
 
     def delete_warning(self, warning_field):

@@ -44,8 +44,13 @@ class SettingsFunctionsStackedWidget(QStackedWidget,Ui_StackedWidget):
         for field, value in self.file.get_all_properties().items():
             if field in ['path','headers', 'data_format']:
                 continue
-            if not value:
-                value = ''
+
+            if field  == 'record_num':
+                if value['exact']:
+                    self.record_num_label.setText(str(value['exact']))
+                else:
+                    self.record_num_label.setText(str(value['estimated'])+' (estimated)')
+                continue
             self.field_widgets[field].setText(str(value))
 
     # def show_path_warning(self, warning):
