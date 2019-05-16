@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>380</width>
+    <width>384</width>
     <height>1080</height>
    </rect>
   </property>
@@ -37,7 +37,7 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>358</width>
+         <width>362</width>
          <height>996</height>
         </rect>
        </property>
@@ -230,12 +230,12 @@
              <string>Sample</string>
             </property>
             <property name="buddy">
-             <cstring>sample_records_le</cstring>
+             <cstring>sample_size_le</cstring>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QComboBox" name="comboBox">
+           <widget class="QComboBox" name="sample_method_cmbbox">
             <property name="sizePolicy">
              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -252,10 +252,15 @@
               <string>random</string>
              </property>
             </item>
+            <item>
+             <property name="text">
+              <string>all</string>
+             </property>
+            </item>
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="sample_records_le">
+           <widget class="QLineEdit" name="sample_size_le">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -274,6 +279,33 @@
             </property>
             <property name="text">
              <string>records</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_6">
+          <item>
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="load_data_btn">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>Load</string>
             </property>
            </widget>
           </item>
@@ -299,7 +331,7 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>358</width>
+         <width>362</width>
          <height>996</height>
         </rect>
        </property>
@@ -347,9 +379,26 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>load_data_btn</sender>
+   <signal>clicked()</signal>
+   <receiver>StackedWidget</receiver>
+   <slot>load_data_slot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>301</x>
+     <y>297</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>371</x>
+     <y>320</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>parse_path_slot()</slot>
   <slot>add_path_slot()</slot>
+  <slot>load_data_slot()</slot>
  </slots>
 </ui>

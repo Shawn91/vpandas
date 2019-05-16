@@ -60,7 +60,7 @@ def get_exact_record_num(file_path, encoding=None):
     """"""
     return
 
-def sample_distinct_lines_from_file(file_path, total_num_lines=None, sample_size=100, skip_first_nlines=1,encoding='utf-8', random_seed=42):
+def sample_distinct_lines_from_file(path, total_num_lines=None, sample_size=100, skip_first_nlines=1, encoding='utf-8', random_seed=42):
     """Quickly sample distinct lines from a text file.
     If the sample_size is close to the line count of the file, the entire file will be read.
 
@@ -76,18 +76,18 @@ def sample_distinct_lines_from_file(file_path, total_num_lines=None, sample_size
     Returns:
         list: List of lines sampled.
     """
-    is_file = check_is_file(file_path)
+    is_file = check_is_file(path)
     if is_file['result']:
         sample = {}
-        file_size = os.path.getsize(file_path)
+        file_size = os.path.getsize(path)
         if not total_num_lines:
-            total_num_lines_res = approximate_record_number(file_path, encoding=encoding)
+            total_num_lines_res = approximate_record_number(path, encoding=encoding)
             if isinstance(total_num_lines_res['result'], int): # successfully estimated line count of the file
                 total_num_lines = total_num_lines_res['result']
             else:
                 return total_num_lines_res
         
-        with open(file_path, 'rb') as f:
+        with open(path, 'rb') as f:
             if skip_first_nlines and isinstance(skip_first_nlines, int):
                 first_nlines_to_skip = set(f.readline() for _ in range(skip_first_nlines))
             else:

@@ -17,6 +17,8 @@ class DataFileInfo:
         '_separator',
         '_headers',
         '_header_line',
+        '_sample_method',
+        '_sample_size',
         'warnings'
     )
     def __init__(self, file_path=None):
@@ -29,6 +31,8 @@ class DataFileInfo:
         self._separator = ''
         self._headers = []
         self._header_line = 1
+        self._sample_method = ''
+        self._sample_size = 0
         self.warnings = {}
 
     @property
@@ -83,10 +87,10 @@ class DataFileInfo:
         self._exact_record_num = new_exact_record_num
 
     @property
-    def separator(self):
+    def sep(self):
         return self._separator
-    @separator.setter
-    def separator(self, new_separator):
+    @sep.setter
+    def sep(self, new_separator):
         self._separator = new_separator
 
     @property
@@ -103,10 +107,25 @@ class DataFileInfo:
     def header_line(self, new_header_line):
         self._header_line = new_header_line
 
+    @property
+    def sample_method(self):
+        return self._sample_method
+    @sample_method.setter
+    def sample_method(self, new_sample_method):
+        self._sample_method = new_sample_method
+
+    @property
+    def sample_size(self):
+        return self._sample_size
+    @sample_size.setter
+    def sample_size(self, new_sample_size):
+        self._sample_size = new_sample_size
+
+
     def get_all_properties(self):
         return {'path':self.path, 'encoding':self.encoding, 'size':self.size[0], 'size_unit':self.size[1],'data_format':self.data_format,
-                'record_num':{'exact':self.exact_record_num, 'estimated':self.estimated_record_num},
-                'separator':self.separator, 'headers':self.headers, 'header_line':self.header_line}
+                'record_num':{'exact':self.exact_record_num, 'estimated':self.estimated_record_num}, 'sample_size':self.sample_size, 'sample_method':self.sample_method,
+                'sep':self.sep, 'headers':self.headers, 'header_line':self.header_line}
 
     def delete_warning(self, warning_field):
         if warning_field in self.warnings:
@@ -128,9 +147,9 @@ class DataFileInfo:
 
         if self.data_format:
             if self.data_format in ('.csv', '.tsv'):
-                self.separator = ',' if self.data_format == '.csv' else '\t'
+                self.sep = ',' if self.data_format == '.csv' else '\t'
         else:
-            self.separator = ''
+            self.sep = ''
 
         est_record_num_res = utilities.approximate_record_number(self.path, self.encoding)
         if est_record_num_res['result'] or est_record_num_res['result'] == 0:
