@@ -3,6 +3,7 @@ import sys
 from PyQt5 import Qt, QtWidgets
 
 from interface.core_table_widget.table_model import DataFrameTableModel
+from interface.core_table_widget import table_delegates
 import settings
 
 class DataFrameTableView(Qt.QTableView):

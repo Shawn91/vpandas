@@ -2,7 +2,7 @@
 Todo:
     Finish the get_exact_record_num function.
 """
-
+import libraries.helpers
 from libraries.dataLoader import utilities
 import settings
 
@@ -74,7 +74,7 @@ class DataFileInfo:
 
     @property
     def estimated_record_num(self):
-        return self._estimated_record_num
+        return int(self._estimated_record_num)
     @estimated_record_num.setter
     def estimated_record_num(self, new_estimated_record_num):
         self._estimated_record_num = new_estimated_record_num
@@ -116,16 +116,23 @@ class DataFileInfo:
 
     @property
     def sample_size(self):
-        return self._sample_size
+        return int(self._sample_size)
     @sample_size.setter
     def sample_size(self, new_sample_size):
         self._sample_size = new_sample_size
 
-
-    def get_all_properties(self):
-        return {'path':self.path, 'encoding':self.encoding, 'size':self.size[0], 'size_unit':self.size[1],'data_format':self.data_format,
-                'record_num':{'exact':self.exact_record_num, 'estimated':self.estimated_record_num}, 'sample_size':self.sample_size, 'sample_method':self.sample_method,
-                'sep':self.sep, 'headers':self.headers, 'header_line':self.header_line}
+    # return necessary properties for previewing data when preview_mode set to True
+    def get_all_properties(self, preview_mode=False):
+        if preview_mode:
+            return {'path':self.path, 'encoding':self.encoding, 'size':self.size[0], 'size_unit':self.size[1],
+                    'data_format':self.data_format,'record_num':{'exact':self.exact_record_num, 'estimated':self.estimated_record_num},
+                    'sample_size':50, 'sample_method':'first','sep':self.sep, 'headers':self.headers,
+                    'header_line':self.header_line}
+        else:
+            return {'path':self.path, 'encoding':self.encoding, 'size':self.size[0], 'size_unit':self.size[1],
+                    'data_format':self.data_format,'record_num':{'exact':self.exact_record_num, 'estimated':self.estimated_record_num},
+                    'sample_size':self.sample_size, 'sample_method':self.sample_method,'sep':self.sep, 'headers':self.headers,
+                    'header_line':self.header_line}
 
     def delete_warning(self, warning_field):
         if warning_field in self.warnings:
@@ -136,7 +143,7 @@ class DataFileInfo:
             new_encoding = utilities.check_encoding(self.path)['result']
         self.encoding = new_encoding
 
-        self.size = settings.convert_bytes(utilities.check_file_size(self.path)['result'])
+        self.size = libraries.helpers.convert_bytes(utilities.check_file_size(self.path)['result'])
 
         data_format_res = utilities.parse_data_format_from_path(self.path)
         if data_format_res['result']:

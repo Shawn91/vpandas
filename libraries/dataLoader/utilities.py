@@ -3,7 +3,8 @@ import random
 
 import chardet
 
-from settings import generate_response
+from libraries.helpers import generate_response
+
 
 def check_is_file(file_path):
     """Check wheter the value of file_path argument is a valid file path"""

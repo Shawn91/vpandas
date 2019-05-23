@@ -4,14 +4,15 @@ from PyQt5.QtCore import pyqtSignal
 
 
 from interface.custom_widgets.ui_settings_functions_stacked_widget import Ui_StackedWidget
-from libraries.dataLoader.utilities import parse_data_format_from_path,approximate_record_number,check_encoding
 from libraries.dataLoader.data_file_info import DataFileInfo
 import settings
+from libraries import helpers
+
+# TODO: random seed function
 
 
-class SettingsFunctionsStackedWidget(QStackedWidget,Ui_StackedWidget):
-    data_load_ready_signal = pyqtSignal(object)
-
+class SettingsFunctionsStackedWidget(QStackedWidget, Ui_StackedWidget):
+    data_load_ready_signal = pyqtSignal(dict)
 
     def __init__(self, parent=None):
         super().__init__(parent=parent)
@@ -26,26 +27,29 @@ class SettingsFunctionsStackedWidget(QStackedWidget,Ui_StackedWidget):
 
     def init_ui(self):
         self.csv_settings_widget.setEnabled(False)
+        self.random_seed_wcontainer.setVisible(False)
 
-
+    @helpers.MyPyQtSlot()
     def parse_path_slot(self, changed_text):
         if self.file.path != self.path_le.text():
             self.file.path = self.path_le.text()
             self.populate_fields_warnings()
 
-    def add_path_slot(self):
+    @helpers.MyPyQtSlot()
+    def add_path_slot(self, clicked):
         path = QFileDialog.getOpenFileName(self, "Choose a file", "./", "All(*.*);;CSV(*.csv, *.tsv);;JSON(*.json)", "All(*.*)")[0]
         self.path_le.setText(path)
 
+    @helpers.MyPyQtSlot()
     def populate_fields_warnings(self):
         self.path_warning_label.setText(self.file.warnings.get('path',''))
         if not self.file.warnings.get('path'):
             self.load_data_btn.setEnabled(True)
+            self.data_load_ready_signal.emit({'file':self.file, 'preview_mode':True})
         self.file.delete_warning('path')
 
-
         for field, value in self.file.get_all_properties().items():
-            if field in ['path','headers','sample_size','sample_method']:
+            if field in ['path', 'headers', 'sample_size', 'sample_method']:
                 continue
 
             if field == 'data_format':
@@ -55,18 +59,32 @@ class SettingsFunctionsStackedWidget(QStackedWidget,Ui_StackedWidget):
                     self.csv_settings_widget.setEnabled(False)
                 continue
 
-            if field  == 'record_num':
+            if field == 'record_num':
                 if value['exact']:
                     self.record_num_label.setText(str(value['exact']))
                 else:
-                    self.record_num_label.setText(str(value['estimated'])+' (estimated)')
+                    self.record_num_label.setText(str(value['estimated']) + ' (estimated)')
                 continue
+
             self.field_widgets[field].setText(str(value))
 
+    @helpers.MyPyQtSlot()
     def load_data_slot(self, clicked):
         self.collect_file_info()
-        self.data_load_ready_signal.emit(self.file)
+        self.data_load_ready_signal.emit({'file' : self.file, 'preview_mode' : False})
 
+    @helpers.MyPyQtSlot()
+    def load_test_data_slot(self, clicked):
+        self.path_le.setText('E:/Study/microsoft-malware-prediction/train.csv')
+
+    @helpers.MyPyQtSlot()
+    def show_random_seed_wcontainer_slot(self, selected_item):
+        if selected_item == 'random':
+            self.random_seed_wcontainer.setVisible(True)
+        else:
+            self.random_seed_wcontainer.setVisible(False)
+
+    @helpers.MyPyQtSlot()
     def collect_file_info(self):
         self.file.path = self.path_le.text()
         self.file.encoding = self.encoding_le.text()
@@ -76,33 +94,5 @@ class SettingsFunctionsStackedWidget(QStackedWidget,Ui_StackedWidget):
         self.file.sample_method = self.sample_method_cmbbox.currentText()
         self.file.sample_size = self.sample_size_le.text()
 
-    # def show_path_warning(self, warning):
-    #     if not warning:
-    #         warning = ''
-    #     self.path_warning_label.setText(warning)
-    #
-    # def handle_path(self, path,data_format):
-    #     self.file.path = path
-    #     record_num_estimation = self._estimate_record_num(data_format)
-    #     if data_format in ('.csv', '.tsv'):
-    #         self._handle_csv_path(data_format)
-    #
-    # def _handle_csv_path(self, data_format):
-    #     self.csv_settings_widget.setEnabled(True)
-    #     separator = ',' if data_format=='.csv' else '\t'
-    #     self.csv_seperator_le.setText(separator)
-    #
-    # def _estimate_record_num(self,data_format):
-    #     encoding = self.encoding_le.text().lower()
-    #     if data_format in ('.csv', '.tsv'):
-    #         approximate_record_number()
-    #
-    # def _detect_encoding(self):
-    #     if self.path:
-    #         if self.encoding_le.text().strip():
-    #             self.encoding = self.encoding_le.text().strip()
-    #         else:
-    #             check_encoding(self.path)
-
-
-
+    def select_columns_slot(self, clicked):
+        pass

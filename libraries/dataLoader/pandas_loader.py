@@ -6,7 +6,7 @@ import pandas as pd
 import chardet
 
 import settings
-from settings import generate_response
+from libraries.helpers import generate_response
 from libraries.dataLoader import utilities
 
 class PandasLoader:
